@@ -4,10 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.models import load_model
 from app.predict import predict_stunting
 
-# Load model dan scaler
 model, scaler = load_model("app/model.pkl")
 
-# FastAPI instance
 app = FastAPI(
     title="Stunting Prediction API",
     description="API untuk memprediksi status stunting berdasarkan data pengguna",
@@ -22,7 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Schema input untuk prediksi stunting
 class StuntingInput(BaseModel):
     gender: str  # Jenis Kelamin
     age_months: int  # Umur dalam bulan
@@ -36,10 +33,8 @@ class StuntingPredictionResponse(BaseModel):
 async def predict(data: StuntingInput):
     """Endpoint untuk prediksi stunting"""
     try:
-        # Melakukan prediksi menggunakan model dan scaler
         pred_class = predict_stunting(model, scaler, data.gender, data.age_months, data.height_cm, data.weight_kg)
 
-        # Mengkonversi kelas prediksi ke nama kelas yang sesuai
         class_names = ["Tall", "Stunted", "Normal", "Severely Stunted"]
         prediction = class_names[pred_class]
         
@@ -55,11 +50,9 @@ def read_root():
 def health_check():
     """Endpoint untuk memeriksa status kesehatan API dan model"""
     try:
-        # Cek status model
         model_status = "Loaded" if model else "Not Loaded"
         scaler_status = "Loaded" if scaler else "Not Loaded"
         
-        # Mengembalikan status kesehatan
         return {
             "status": "healthy",
             "model_status": model_status,
