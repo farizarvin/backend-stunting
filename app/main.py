@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 from app.models import load_model
 from app.predict import predict_stunting
 
@@ -11,6 +12,14 @@ app = FastAPI(
     title="Stunting Prediction API",
     description="API untuk memprediksi status stunting berdasarkan data pengguna",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Schema input untuk prediksi stunting
